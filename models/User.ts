@@ -15,16 +15,18 @@ const UserSchema = new Schema({
         lowercase: true, 
         required: true, 
         trim: true,
-        maxLength: 25},
+        maxLength: 25
+    },
     email: {type: String, 
         lowercase: true, 
         required: true, 
         trim: true,
         maxLength: 25,
-        match: /^[^\s@]+@[^\s@]+\.[^\s@]+$/},
-    password: {type: String, required: true, maxLength: 25},
+        match: /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    },
+    password: { type: String, required: true, maxLength: 25 },
     profilePicture: String,
-    tasks: {type: [{ type: Schema.Types.ObjectId, ref: 'Task' }], required: true}
+    tasks: { type: [{ type: Schema.Types.ObjectId, ref: 'Task' }], required: true }
 });
 
 export {
