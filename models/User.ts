@@ -26,7 +26,7 @@ const UserSchema = new Schema({
     },
     password: { type: String, required: true, maxLength: 25 },
     profilePicture: String,
-    tasks: { type: [{ type: Schema.Types.ObjectId, ref: 'Task' }], required: true }
+    tasks: { type: [{ type: Schema.Types.ObjectId, ref: 'Tasks' }], required: true }
 });
 
 export {
@@ -34,4 +34,4 @@ export {
     UserSchema
 }
 
-export default model<IUser>('User', UserSchema);
+export default model<IUser>('Users', UserSchema);

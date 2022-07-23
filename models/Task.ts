@@ -37,7 +37,7 @@ const TaskSchema = new Schema({
     dateCreated: { type: Date, required: true },
     priority: { type: Number, enum: [0, 1, 2], required: true },
     isCompleted: { type: Boolean, required: true },
-    owner: { type: Schema.Types.ObjectId, ref: 'User', required: true }
+    owner: { type: Schema.Types.ObjectId, ref: 'Users', required: true }
 });
 
 export {
@@ -45,4 +45,4 @@ export {
     TaskSchema
 }
 
-export default model<ITask>('Task', TaskSchema);
+export default model<ITask>('Tasks', TaskSchema);

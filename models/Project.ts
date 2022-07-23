@@ -35,4 +35,4 @@ export {
     ProjectSchema
 }
 
-export default model<IProject>('Project', ProjectSchema)
+export default model<IProject>('Projects', ProjectSchema)
