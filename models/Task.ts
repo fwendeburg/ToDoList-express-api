@@ -46,4 +46,4 @@ export {
     TaskSchema
 }
 
-export default model<Itask>('Task', TaskSchema);
+export default model<ITask>('Task', TaskSchema);
