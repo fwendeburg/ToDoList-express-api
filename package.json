@@ -1,0 +1,35 @@
+{
+  "name": "todolist-api",
+  "version": "1.0.0",
+  "description": "A REST API for a todo list app.",
+  "private": true,
+  "main": "index.js",
+  "scripts": {
+    "build": "npx tsc",
+    "start": "node dist/index.js",
+    "dev": "concurrently \"npx tsc --watch\" \"nodemon -q dist/index.js\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fwendeburg/ToDoList-api.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/fwendeburg/ToDoList-api/issues"
+  },
+  "homepage": "https://github.com/fwendeburg/ToDoList-api#readme",
+  "dependencies": {
+    "dotenv": "^16.0.1",
+    "express": "^4.18.1",
+    "mongoose": "^6.4.6"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.13",
+    "@types/node": "^18.0.6",
+    "concurrently": "^7.3.0",
+    "nodemon": "^2.0.19",
+    "typescript": "^4.7.4"
+  }
+}
