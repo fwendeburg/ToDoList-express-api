@@ -12,7 +12,7 @@ interface ITask extends Document {
     description?: string;
     dueDate?: Date;
     dateCreated: Date;
-    priority?: TaskPriority;
+    priority: TaskPriority;
     isCompleted: boolean;
     owner: IUser["_id"];
 }
@@ -22,7 +22,8 @@ const TaskSchema = new Schema({
         type: String, 
         required: true, 
         trim: true,
-        maxLength: 70},
+        maxLength: 70
+    },
     description: { type: String },
     dueDate: {
         type: Date,
@@ -34,7 +35,7 @@ const TaskSchema = new Schema({
             return true;
         }]
     },
-    dateCreated: { type: Date, required: true },
+    dateCreated: { type: Date, required: true, default: Date.now },
     priority: { type: Number, enum: [0, 1, 2], required: true },
     isCompleted: { type: Boolean, required: true },
     owner: { type: Schema.Types.ObjectId, ref: 'Users', required: true }
@@ -45,4 +46,6 @@ export {
     TaskSchema
 }
 
-export default model<ITask>('Tasks', TaskSchema);
+const TaskModel = model<ITask>('Tasks', TaskSchema);
+
+export default TaskModel;

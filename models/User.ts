@@ -1,12 +1,14 @@
 import { Document, Schema, model } from 'mongoose';
-import { TaskSchema, ITask } from './Task';
+import { IProject } from './Project';
+import { ITask } from './Task';
 
 interface IUser extends Document {
     name: string;
     email: string;
     password: string;
-    profilePicture?: string;
+    profilePicture: string;
     tasks: ITask[];
+    projects: IProject[];
 }
 
 const UserSchema = new Schema({
@@ -22,11 +24,13 @@ const UserSchema = new Schema({
         required: true, 
         trim: true,
         maxLength: 25,
-        match: /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+        match: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+        unique: true
     },
     password: { type: String, required: true, maxLength: 25 },
-    profilePicture: String,
-    tasks: { type: [{ type: Schema.Types.ObjectId, ref: 'Tasks' }], required: true }
+    profilePicture: { type: String, required: true },
+    tasks: { type: [{ type: Schema.Types.ObjectId, ref: 'Tasks' }], required: true },
+    projects: { type: [{ type: Schema.Types.ObjectId, ref: 'Projects' }], required: true }
 });
 
 export {
@@ -34,4 +38,6 @@ export {
     UserSchema
 }
 
-export default model<IUser>('Users', UserSchema);
+const UserModel = model<IUser>('Users', UserSchema);
+
+export default UserModel;
