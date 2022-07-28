@@ -1,9 +1,6 @@
 import { NextFunction, Request, Response } from "express";
-import passport from "passport";
-import jwt from "jsonwebtoken";
 import { generatePassword, issueJWT, validatePassword } from "../utils/auth";
 import UserModel from "../models/User";
-import { nextTick } from "process";
 
 
 function login(req: Request, res: Response, next: NextFunction) {
