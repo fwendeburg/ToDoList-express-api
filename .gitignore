@@ -162,3 +162,6 @@ dist
 
 # Ignore code-workspaces
 *.code-workspace
+
+# Generated RSA Keys
+*.pem
