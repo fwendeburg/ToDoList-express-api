@@ -18,13 +18,13 @@ const UserSchema = new Schema({
         lowercase: true, 
         required: true, 
         trim: true,
-        maxLength: 25
+        maxLength: 35
     },
     email: {type: String, 
         lowercase: true, 
         required: true, 
         trim: true,
-        maxLength: 25,
+        maxLength: 50,
         match: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
         unique: true
     },
