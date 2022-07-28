@@ -7,17 +7,12 @@ passport.use(new JWTStrategy({
     secretOrKey: `${process.env.AUTH_SECRET}`
 },
 async function(jwtPayload, done) {
-    try {
-        const user = await UserModel.findOne({ _id: jwtPayload.userId });
-        
+    UserModel.findOne({ _id: jwtPayload.userId }).then(user => {
         if (user) {
             return done(null, user);
         }
         else {
             return done(null, false);
         }
-    }
-    catch (error) {
-        return done(error);
-    }
+    }).catch(error => done(error));
 }));
