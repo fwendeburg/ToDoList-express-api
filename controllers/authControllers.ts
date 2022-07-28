@@ -1,35 +1,49 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import passport from "passport";
 import jwt from "jsonwebtoken";
+import { generatePassword, issueJWT, validatePassword } from "../utils/auth";
+import UserModel from "../models/User";
+import { nextTick } from "process";
 
 
-function login(req: Request, res: Response) {
-    passport.authenticate('local', { session: false }, function(err, user, info) {
-        if (err || !user) {
-            return res.status(500); // Internal server error
+function login(req: Request, res: Response, next: NextFunction) {
+    UserModel.findOne({ email: req.body.email }).then(user => {
+        if (!user) {
+            res.status(401).json({ success: false, msg: "user not found" });
         }
+        else {
+            const isPassValid = validatePassword(req.body.password, user.password, user.salt);
+        
+            if (isPassValid) {
+                const jwtToken = issueJWT(user);
 
-        req.login(user, { session: false }, function(err) {
-            if (err) {
-                res.send(err);
+                res.status(200).json({ success: true, user: user, token: jwtToken.token, expiresIn: jwtToken.expiresIn })
             }
-        });
-
-        const payload = {
-            email: user.email,
-            userId: user._id
+            else {
+                res.status(401).json({ success: false, msg: "incorrect password" });
+            }
         }
-
-        const token: string = jwt.sign(payload, <string>process.env.JWTSECRET);
-        return res.json({ 
-            payload,
-            token: `Bearer ${token}` 
-        });
-    })(req, res);
+    }).catch(error => next(error));
 }
 
-function signup(req: Request, res: Response) {
-    res.send("NOT IMPLEMENTED");
+function signup(req: Request, res: Response, next: NextFunction) {
+    const hashedPass = generatePassword(req.body.password);
+
+    const newUser =  new UserModel({
+        name: req.body.name,
+        email: req.body.email,
+        password: hashedPass.hash,
+        salt: hashedPass.salt,
+        profilePicture: req.body.profilePicture,
+        tasks: [],
+        projects: [],
+    });
+
+    newUser.save().then(user => {
+        const jwtToken = issueJWT(user);
+
+        res.json({success: true, user: user, token: jwtToken.token, expiresIn: jwtToken.expiresIn});
+    }).catch(error => next(error));
 }
 
 export {

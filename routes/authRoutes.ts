@@ -6,6 +6,6 @@ let authRouter = Router();
 
 authRouter.post('/login', login);
 
-authRouter.post('/signup', signup);
+authRouter.post('/register', signup);
 
 export default authRouter;
