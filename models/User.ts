@@ -6,6 +6,7 @@ interface IUser extends Document {
     name: string;
     email: string;
     password: string;
+    salt: string;
     profilePicture: string;
     tasks: ITask[];
     projects: IProject[];
@@ -27,8 +28,9 @@ const UserSchema = new Schema({
         match: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
         unique: true
     },
-    password: { type: String, required: true, maxLength: 25 },
-    profilePicture: { type: String, required: true },
+    password: { type: String, required: true },
+    salt: { type: String, required: true },
+    profilePicture: { type: String },
     tasks: { type: [{ type: Schema.Types.ObjectId, ref: 'Tasks' }], required: true },
     projects: { type: [{ type: Schema.Types.ObjectId, ref: 'Projects' }], required: true }
 });
