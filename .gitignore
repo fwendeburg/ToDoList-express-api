@@ -165,3 +165,6 @@ dist
 
 # Generated RSA Keys
 *.pem
+
+# Package lock
+package-lock.json
