@@ -27,7 +27,7 @@ function issueJWT(user: IUser) {
 
     const expiresIn: string = '4d'; 
 
-    const signedToken = jsonwebtoken.sign(payload, <string>process.env.RSA_PRIV_KEY, {expiresIn: expiresIn, algorithm: 'RS256'});
+    const signedToken = jsonwebtoken.sign(payload, <string>process.env.AUTH_SECRET, { expiresIn: expiresIn });
 
     return {
         token: `Bearer ${signedToken}`,

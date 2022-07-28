@@ -4,8 +4,7 @@ import { Strategy as JWTStrategy, ExtractJwt as ExtractJWT } from "passport-jwt"
 
 passport.use(new JWTStrategy({
     jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken(),
-    secretOrKey: `${process.env.RSA_PUB_KEY}`,
-    algorithms: ['RS256']
+    secretOrKey: `${process.env.AUTH_SECRET}`
 },
 async function(jwtPayload, done) {
     try {
