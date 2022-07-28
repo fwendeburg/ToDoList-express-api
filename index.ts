@@ -7,7 +7,7 @@ import projectsRouter from './routes/projectsRoutes';
 import userRouter from './routes/userRoutes';
 import authRouter from './routes/authRoutes';
 import passport from "passport";
-import "./passportConfig";
+import "./authentication/passportConfig";
 
 dotenv.config();
 
@@ -17,24 +17,23 @@ const port = process.env.PORT;
 // DB connection
 (async function() {
   try {
-    await connect(process.env.DBCONNECTIONSTR as string, {
+    await connect(process.env.DB_URI as string, {
       useNewUrlParser: true,
       useUnifiedTopology: true
     } as ConnectOptions);
   }
   catch (error) {
-    console.log("Database connection failed!");
+    console.log("Database connection failed! " + error);
   }
-});
+})();
 
 // Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+app.use(passport.initialize());
 
 // Routes
-app.use('/', authRouter);
-app.use('/', indexRouter);
-//TODO /app routes.
+app.use('/', authRouter, indexRouter);
 app.use('/tasks', passport.authenticate('jwt', { session: false }), taskRouter);
 app.use('/projects', passport.authenticate('jwt', { session: false }), projectsRouter);
 app.use('/users', passport.authenticate('jwt', { session: false }), userRouter);
