@@ -5,7 +5,6 @@ import indexRouter from './routes/indexRoutes';
 import taskRouter from './routes/tasksRoutes';
 import projectsRouter from './routes/projectsRoutes';
 import userRouter from './routes/userRoutes';
-import authRouter from './routes/authRoutes';
 import passport from "passport";
 import "./authentication/passportConfig";
 
@@ -33,10 +32,10 @@ app.use(express.urlencoded({ extended: false }));
 app.use(passport.initialize());
 
 // Routes
-app.use('/', authRouter, indexRouter);
+app.use('/', indexRouter);
 app.use('/tasks', passport.authenticate('jwt', { session: false }), taskRouter);
 app.use('/projects', passport.authenticate('jwt', { session: false }), projectsRouter);
-app.use('/users', passport.authenticate('jwt', { session: false }), userRouter);
+app.use('/users', userRouter);
 
 app.use(function (req: Request, res: Response) {
   res.sendStatus(404);

@@ -23,7 +23,7 @@ function login(req: Request, res: Response, next: NextFunction) {
     }).catch(error => next(error));
 }
 
-function signup(req: Request, res: Response, next: NextFunction) {
+function register(req: Request, res: Response, next: NextFunction) {
     const hashedPass = generatePassword(req.body.password);
 
     const newUser =  new UserModel({
@@ -45,5 +45,5 @@ function signup(req: Request, res: Response, next: NextFunction) {
 
 export {
     login,
-    signup
+    register
 }
