@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { generatePassword, issueJWT, validatePassword } from "../utils/auth";
+import { generatePassword, issueJWT, validatePassword } from "../authentication/utils";
 import UserModel from "../models/User";
 
 

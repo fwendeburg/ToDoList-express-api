@@ -38,7 +38,6 @@ app.use('/tasks', passport.authenticate('jwt', { session: false }), taskRouter);
 app.use('/projects', passport.authenticate('jwt', { session: false }), projectsRouter);
 app.use('/users', passport.authenticate('jwt', { session: false }), userRouter);
 
-
 app.use(function (req: Request, res: Response) {
   res.sendStatus(404);
 });
