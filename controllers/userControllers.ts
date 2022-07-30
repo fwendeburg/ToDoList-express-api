@@ -14,7 +14,14 @@ function userLogin(req: Request, res: Response, next: NextFunction) {
             if (isPassValid) {
                 const jwtToken = issueJWT(user);
 
-                res.status(200).json({ success: true, user: user, token: jwtToken.token, expiresIn: jwtToken.expiresIn })
+                const userToSend = {
+                    name: user.name,
+                    email: user.email,
+                    profilePicture: user.profilePicture,
+                    _id: user._id
+                }
+
+                res.status(200).json({ success: true, user: userToSend, token: jwtToken.token, expiresIn: jwtToken.expiresIn })
             }
             else {
                 res.status(401).json({ success: false, msg: "incorrect password" });
@@ -31,15 +38,20 @@ function registerUser(req: Request, res: Response, next: NextFunction) {
         email: req.body.email,
         password: hashedPass.hash,
         salt: hashedPass.salt,
-        profilePicture: req.body.profilePicture,
-        tasks: [],
-        projects: [],
+        profilePicture: req.body.profilePicture
     });
 
     newUser.save().then(user => {
         const jwtToken = issueJWT(user);
 
-        res.json({success: true, user: user, token: jwtToken.token, expiresIn: jwtToken.expiresIn});
+        const userToSend = {
+            name: user.name,
+            email: user.email,
+            profilePicture: user.profilePicture,
+            _id: user._id
+        }
+
+        res.json({success: true, user: userToSend, token: jwtToken.token, expiresIn: jwtToken.expiresIn});
     }).catch(error => next(error));
 }
 
