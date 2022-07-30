@@ -1,7 +1,6 @@
 import { Router } from "express";
 import passport from "passport";
-import { userDetail, userUpdate, userDelete } from '../controllers/userControllers'
-import { login, register } from "../controllers/authControllers";
+import {userDelete, userLogin, userUpdate, userDetail, registerUser} from '../controllers/userControllers'
 
 
 let userRouter = Router();
@@ -12,8 +11,8 @@ userRouter.put('/:userid', passport.authenticate('jwt', { session: false }), use
 
 userRouter.delete('/:userid', passport.authenticate('jwt', { session: false }), userDelete);
 
-userRouter.post('/login', login);
+userRouter.post('/login', userLogin);
 
-userRouter.post('/register', register);
+userRouter.post('/register', registerUser);
 
 export default userRouter;
