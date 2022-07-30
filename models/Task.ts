@@ -1,4 +1,5 @@
 import { Document, Schema, model, Types } from 'mongoose';
+import { IProject } from './Project';
 import { IUser } from './User';
 
 enum TaskPriority {
@@ -15,6 +16,7 @@ interface ITask extends Document {
     priority: TaskPriority;
     isCompleted: boolean;
     owner: IUser["_id"];
+    project: IProject["_id"];
 }
 
 const TaskSchema = new Schema({
@@ -37,8 +39,9 @@ const TaskSchema = new Schema({
     },
     dateCreated: { type: Date, required: true, default: Date.now },
     priority: { type: Number, enum: [0, 1, 2], required: true },
-    isCompleted: { type: Boolean, required: true },
-    owner: { type: Schema.Types.ObjectId, ref: 'Users', required: true }
+    isCompleted: { type: Boolean, required: true, default: false },
+    owner: { type: Schema.Types.ObjectId, ref: 'Users', required: true },
+    project: { type: Schema.Types.ObjectId, ref: 'Projects', required: false }
 });
 
 export {

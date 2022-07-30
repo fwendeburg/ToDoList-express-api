@@ -1,6 +1,4 @@
 import { Document, Schema, model } from 'mongoose';
-import { IProject } from './Project';
-import { ITask } from './Task';
 
 interface IUser extends Document {
     name: string;
@@ -8,8 +6,6 @@ interface IUser extends Document {
     password: string;
     salt: string;
     profilePicture: string;
-    tasks: ITask[];
-    projects: IProject[];
 }
 
 const UserSchema = new Schema({
@@ -30,9 +26,7 @@ const UserSchema = new Schema({
     },
     password: { type: String, required: true },
     salt: { type: String, required: true },
-    profilePicture: { type: String },
-    tasks: { type: [{ type: Schema.Types.ObjectId, ref: 'Tasks' }], required: true },
-    projects: { type: [{ type: Schema.Types.ObjectId, ref: 'Projects' }], required: true }
+    profilePicture: { type: String }
 });
 
 export {

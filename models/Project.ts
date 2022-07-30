@@ -2,10 +2,9 @@ import { Document, Schema, model, Types } from 'mongoose';
 import { ITask } from './Task';
 import { IUser } from './User';
 
-interface IProject {
+interface IProject extends Document {
     name: string;
     description?: string;
-    tasks: ITask[];
     dueDate?: Date;
     dateCreated: Date;
     owner: IUser["_id"];
@@ -19,7 +18,6 @@ const ProjectSchema = new Schema({
         required: true
     },
     description: { type: String },
-    tasks: {type: [{ type: Schema.Types.ObjectId, ref: 'Task' }], required: true },
     dueDate: {
         type: Date,
         validate: [function(this: IProject) {
