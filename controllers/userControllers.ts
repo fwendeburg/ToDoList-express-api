@@ -17,7 +17,6 @@ function userLogin(req: Request, res: Response, next: NextFunction) {
                 const userToSend = {
                     name: user.name,
                     email: user.email,
-                    profilePicture: user.profilePicture,
                     _id: user._id
                 }
 
@@ -47,7 +46,6 @@ function registerUser(req: Request, res: Response, next: NextFunction) {
         const userToSend = {
             name: user.name,
             email: user.email,
-            profilePicture: user.profilePicture,
             _id: user._id
         }
 
