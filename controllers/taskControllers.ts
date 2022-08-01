@@ -24,7 +24,7 @@ async function taskUpdate(req: Request, res: Response) {
         let task = await TaskModel.findById({_id: req.params.taskid});
         
         if (task) {
-            task.name = req.body.name || task.name;
+            task.title = req.body.title || task.title;
             task.description = req.body.description || task.description;
             task.dueDate = req.body.dueDate || task.dueDate;
             task.priority = req.body.priority || task.priority;
@@ -43,7 +43,7 @@ async function taskUpdate(req: Request, res: Response) {
 
 function taskCreate(req: Request, res: Response) {
     const newTask = new TaskModel({
-        name: req.body.name,
+        title: req.body.title,
         description: req.body.description,
         dueDate: req.body.dueDate,
         priority: req.body.priority,

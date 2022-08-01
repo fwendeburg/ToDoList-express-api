@@ -9,7 +9,7 @@ enum TaskPriority {
 }
 
 interface ITask extends Document {
-    name: string;
+    title: string;
     description?: string;
     dueDate?: Date;
     dateCreated: Date;
@@ -20,7 +20,7 @@ interface ITask extends Document {
 }
 
 const TaskSchema = new Schema({
-    name: {
+    title: {
         type: String, 
         required: true, 
         trim: true,

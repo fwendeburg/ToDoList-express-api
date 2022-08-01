@@ -1,16 +1,26 @@
 import { Request, Response } from "express";
 import ProjectModel from "../models/Project";
+import TaskModel from "../models/Task";
 
 function projectList(req: Request, res: Response) {
     ProjectModel.find({owner: req.user._id}).then(projects => {
-        res.status(200).json({success: true, tasks: projects});
+        res.status(200).json({success: true, projects: projects});
     }).catch(err => res.status(500).json({success: false, msg: `Error while querying projects: ${err}`}));
 }
 
-function projectDetail(req: Request, res: Response) {
-    ProjectModel.findById({_id: req.params.projectid}).then(project => {
-        res.status(200).json({success: true, task: project});
-    }).catch(err => res.status(500).json({success: false, msg: `Error while querying project: ${err}`}));
+async function projectDetail(req: Request, res: Response) {
+    try {
+        const project = await ProjectModel.findById({_id: req.params.projectid});
+
+        if (project) {
+            const tasks = await TaskModel.find({project: project._id});
+
+            res.status(200).json({success: true, project: project, tasks: tasks});
+        }
+    }
+    catch (error) {
+        res.status(500).json({success: false, msg: `Error while querying project: ${error}`});
+    }
 }
 
 function projectDelete(req: Request, res: Response) {
@@ -24,7 +34,7 @@ async function projectUpdate(req: Request, res: Response) {
         let project = await ProjectModel.findById({_id: req.params.projectid});
         
         if (project) {
-            project.name = req.body.name || project.name;
+            project.title = req.body.name || project.title;
             project.description = req.body.description || project.description;
             project.dueDate = req.body.dueDate || project.dueDate;
         
@@ -40,7 +50,7 @@ async function projectUpdate(req: Request, res: Response) {
 
 function projectCreate(req: Request, res: Response) {
     const newProject = new ProjectModel({
-        name: req.body.name,
+        title: req.body.title,
         description: req.body.description,
         dueDate: req.body.dueDate,
         owner: req.user._id

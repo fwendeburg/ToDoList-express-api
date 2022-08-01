@@ -3,7 +3,7 @@ import { ITask } from './Task';
 import { IUser } from './User';
 
 interface IProject extends Document {
-    name: string;
+    title: string;
     description?: string;
     dueDate?: Date;
     dateCreated: Date;
@@ -11,7 +11,7 @@ interface IProject extends Document {
 }
 
 const ProjectSchema = new Schema({
-    name: {
+    title: {
         type: String, 
         trim: true,
         maxLength: 50,
