@@ -1,7 +1,6 @@
 import express, { Express, Request, Response } from 'express';
 import dotenv from 'dotenv';
 import { connect, ConnectOptions } from 'mongoose';
-import indexRouter from './routes/indexRoutes';
 import taskRouter from './routes/tasksRoutes';
 import projectsRouter from './routes/projectsRoutes';
 import userRouter from './routes/userRoutes';
