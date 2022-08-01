@@ -32,7 +32,6 @@ app.use(express.urlencoded({ extended: false }));
 app.use(passport.initialize());
 
 // Routes
-app.use('/', indexRouter);
 app.use('/tasks', passport.authenticate('jwt', { session: false }), taskRouter);
 app.use('/projects', passport.authenticate('jwt', { session: false }), projectsRouter);
 app.use('/users', userRouter);
