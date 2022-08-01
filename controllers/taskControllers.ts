@@ -53,7 +53,7 @@ function taskCreate(req: Request, res: Response) {
 
     newTask.save().then(task => {
         res.status(200).json(task);
-    }).catch(err => res.status(500).json({msg: `Error while creating task: ${err}`}));
+    }).catch(err => res.status(500).json({success: false, msg: `Error while creating task: ${err}`}));
 }
 
 export {
