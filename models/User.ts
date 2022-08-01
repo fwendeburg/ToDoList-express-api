@@ -5,7 +5,6 @@ interface IUser extends Document {
     email: string;
     password: string;
     salt: string;
-    profilePicture: string;
 }
 
 const UserSchema = new Schema({
@@ -26,7 +25,6 @@ const UserSchema = new Schema({
     },
     password: { type: String, required: true },
     salt: { type: String, required: true },
-    profilePicture: { type: String }
 });
 
 export {
