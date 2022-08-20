@@ -1,27 +1,18 @@
 # ToDoList-api
-
 A REST API for a todo list app.
 
-
 ## Features
-
 - User, Task and Project models with CRUD operations.
 - Separate route for each model.
 - Authentication using JWT.
 
-
 ## Tech Stack
-
 Node.js, Typescript, Javascript
 
-
 ## Documentation
-
 Work in progress.
 
-
 ## Run Locally
-
 Clone the project
 
 ```bash
@@ -53,22 +44,16 @@ Start the server
   npm run start
 ```
 
-
 ## Environment Variables
-
 To run this project, you will need to add the following environment variables to your .env file
 
 `PORT` the port at which the app will listen to requests.
 
 `DB_URI` the URI for the db connection.
 
-
 ## License
-
 [MIT](https://choosealicense.com/licenses/mit/)
 
-
 ## Authors
-
 - [@fwendeburg](https://www.github.com/fwendeburg)
 
