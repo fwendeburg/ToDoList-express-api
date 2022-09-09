@@ -1,25 +1,26 @@
-import { Request, Response } from "express";
+import { Response } from "express";
 import TaskModel from "../models/Task";
+import { AuthenticatedRequest } from '../@types/ExpressExtended';
 
-function taskList(req: Request, res: Response) {
+function taskList(req: AuthenticatedRequest, res: Response) {
     TaskModel.find({owner: req.user._id}).then(tasks => {
         res.status(200).json({success: true, tasks: tasks});
     }).catch(err => res.status(500).json({success: false, msg: `Error while querying tasks: ${err}`}));
 }
 
-function taskDetail(req: Request, res: Response) {
+function taskDetail(req: AuthenticatedRequest, res: Response) {
     TaskModel.findById({_id: req.params.taskid}).then(task => {
         res.status(200).json({success: true, task: task});
     }).catch(err => res.status(500).json({success: false, msg: `Error while querying task: ${err}`}));
 }
 
-function taskDelete(req: Request, res: Response) {
+function taskDelete(req: AuthenticatedRequest, res: Response) {
     TaskModel.findByIdAndRemove({_id: req.params.taskid}).then(task => {
         res.status(200).json({success: true})
     }).catch(err => res.status(500).json({success: false, msg: `Error while removing task: ${err}`}));
 }
 
-async function taskUpdate(req: Request, res: Response) {
+async function taskUpdate(req: AuthenticatedRequest, res: Response) {
     try {
         let task = await TaskModel.findById({_id: req.params.taskid});
         
@@ -41,7 +42,7 @@ async function taskUpdate(req: Request, res: Response) {
     }
 }
 
-function taskCreate(req: Request, res: Response) {
+function taskCreate(req: AuthenticatedRequest, res: Response) {
     const newTask = new TaskModel({
         title: req.body.title,
         description: req.body.description,

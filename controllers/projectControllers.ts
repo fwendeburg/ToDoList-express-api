@@ -1,14 +1,15 @@
-import { Request, Response } from "express";
+import { Response } from "express";
 import ProjectModel from "../models/Project";
 import TaskModel from "../models/Task";
-
-function projectList(req: Request, res: Response) {
+import { AuthenticatedRequest } from '../@types/ExpressExtended';
+ 
+function projectList(req: AuthenticatedRequest, res: Response) {
     ProjectModel.find({owner: req.user._id}).then(projects => {
         res.status(200).json({success: true, projects: projects});
     }).catch(err => res.status(500).json({success: false, msg: `Error while querying projects: ${err}`}));
 }
 
-async function projectDetail(req: Request, res: Response) {
+async function projectDetail(req: AuthenticatedRequest, res: Response) {
     try {
         const project = await ProjectModel.findById({_id: req.params.projectid});
 
@@ -23,13 +24,13 @@ async function projectDetail(req: Request, res: Response) {
     }
 }
 
-function projectDelete(req: Request, res: Response) {
+function projectDelete(req: AuthenticatedRequest, res: Response) {
     ProjectModel.findByIdAndRemove({_id: req.params.taskid}).then(project => {
         res.status(200).json({success: true})
     }).catch(err => res.status(500).json({success: false, msg: `Error while removing project: ${err}`}));
 }
 
-async function projectUpdate(req: Request, res: Response) {
+async function projectUpdate(req: AuthenticatedRequest, res: Response) {
     try {
         let project = await ProjectModel.findById({_id: req.params.projectid});
         
@@ -48,7 +49,7 @@ async function projectUpdate(req: Request, res: Response) {
     }
 }
 
-function projectCreate(req: Request, res: Response) {
+function projectCreate(req: AuthenticatedRequest, res: Response) {
     const newProject = new ProjectModel({
         title: req.body.title,
         description: req.body.description,

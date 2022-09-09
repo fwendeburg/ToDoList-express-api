@@ -2,6 +2,7 @@
 import { NextFunction, Request, Response } from "express";
 import { generatePassword, issueJWT, validatePassword } from "../authentication/utils";
 import UserModel from "../models/User";
+import { AuthenticatedRequest } from '../@types/ExpressExtended';
 
 function userLogin(req: Request, res: Response, next: NextFunction) {
     UserModel.findOne({ email: req.body.email }).then(user => {
@@ -53,15 +54,15 @@ function registerUser(req: Request, res: Response, next: NextFunction) {
     }).catch(error => next(error));
 }
 
-function userDetail(req: Request, res: Response) {
+function userDetail(req: AuthenticatedRequest, res: Response) {
     res.send("NOT IMPLEMENTED");
 }
 
-function userDelete(req: Request, res: Response) {
+function userDelete(req: AuthenticatedRequest, res: Response) {
     res.send("NOT IMPLEMENTED");
 }
 
-function userUpdate(req: Request, res: Response) {
+function userUpdate(req: AuthenticatedRequest, res: Response) {
     res.send("NOT IMPLEMENTED");
 }
 
