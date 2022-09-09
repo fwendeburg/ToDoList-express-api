@@ -14,10 +14,10 @@ const ProjectSchema = new Schema({
     title: {
         type: String, 
         trim: true,
-        maxLength: 50,
-        required: true
+        maxLength: [70, "The max length of the task title is 70 characters"],
+        required: [true, "The project title can't be empty"]
     },
-    description: { type: String },
+    description: { type: String, trim: true },
     dueDate: {
         type: Date,
         validate: [function(this: IProject) {
@@ -29,7 +29,7 @@ const ProjectSchema = new Schema({
         }]
     },
     dateCreated: { type: Date, required: true, default: Date.now },
-    owner: { type: Schema.Types.ObjectId, ref: 'Users', required: true }
+    owner: { type: Schema.Types.ObjectId, ref: 'Users', required: [true, "The project must have an owner"] }
 });
 
 export {

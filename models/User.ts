@@ -11,20 +11,23 @@ const UserSchema = new Schema({
     name: {
         type: String, 
         lowercase: true, 
-        required: true, 
+        required: [true, "The name field is required"], 
         trim: true,
-        maxLength: 35
+        maxLength: [35, "The max length of the name is 35 characters"]
     },
     email: {type: String, 
         lowercase: true, 
-        required: true, 
+        required: [true, "The email field is required"], 
         trim: true,
-        maxLength: 50,
+        maxLength: [50, "The max length of the email is 50 characters"],
         match: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
         unique: true
     },
-    password: { type: String, required: true },
-    salt: { type: String, required: true },
+    password: { 
+        type: String, 
+        required: [true, "The password field is required"],    
+    },
+    salt: { type: String, required: [true, "The salt used to hash the user's password can't be empty"] },
 });
 
 export {

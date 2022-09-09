@@ -22,11 +22,11 @@ interface ITask extends Document {
 const TaskSchema = new Schema({
     title: {
         type: String, 
-        required: true, 
+        required: [true, "The task title can't be empty"], 
         trim: true,
-        maxLength: 70
+        maxLength: [70, "The max length of the task title is 70 characters"]
     },
-    description: { type: String },
+    description: { type: String, trim: true},
     dueDate: {
         type: Date,
         validate: [function(this: ITask) {
@@ -38,10 +38,10 @@ const TaskSchema = new Schema({
         }]
     },
     dateCreated: { type: Date, required: true, default: Date.now },
-    priority: { type: Number, enum: [0, 1, 2], required: true },
+    priority: { type: Number, enum: { values: [0, 1, 2], message: "Priority can only take values [0, 2]" }, required: true },
     isCompleted: { type: Boolean, required: true, default: false },
-    owner: { type: Schema.Types.ObjectId, ref: 'Users', required: true },
-    project: { type: Schema.Types.ObjectId, ref: 'Projects', required: false }
+    owner: { type: Schema.Types.ObjectId, ref: 'Users', required: [true, "The task must have an owner"] },
+    project: { type: Schema.Types.ObjectId, ref: 'Projects' }
 });
 
 export {
