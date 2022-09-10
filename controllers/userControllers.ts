@@ -2,13 +2,19 @@ import { NextFunction, Request, Response } from "express";
 import { generatePassword, issueJWT, validatePassword } from "../authentication/utils";
 import UserModel from "../models/User";
 import { AuthenticatedRequest } from '../@types/ExpressExtended';
+import { Error } from 'mongoose';
 
 async function userLogin(req: Request, res: Response, next: NextFunction) {
+    if (!(req.body.email && req.body.password)) {
+        res.status(400).json({message: `The request is missing the ${!req.body.email? 'email ' : ''}${!req.body.password? 'password ' : ''}arguments in the request body`});
+        return;
+    }
+
     try {
         const user = await UserModel.findOne({ email: req.body.email });
 
         if (!user) {
-            res.status(200).json({ success: false, msg: "Could not find user with that email" });
+            res.status(200).json({ success: false, message: "Could not find user with that email" });
         }
         else {
             const isPassValid = validatePassword(req.body.password, user.password, user.salt);
@@ -25,7 +31,7 @@ async function userLogin(req: Request, res: Response, next: NextFunction) {
                 res.status(200).json({ success: true, user: userToSend, token: jwtToken.token, expiresIn: jwtToken.expiresIn });
             }
             else {
-                res.status(500).json({ success: false, msg: "Incorrect password" });
+                res.status(200).json({ success: false, message: "Incorrect password" });
             }
         }
     }
@@ -35,17 +41,23 @@ async function userLogin(req: Request, res: Response, next: NextFunction) {
 }
 
 async function registerUser(req: Request, res: Response, next: NextFunction) {
-    const hashedPass = generatePassword(req.body.password);
-
-    const newUser =  new UserModel({
-        name: req.body.name,
-        email: req.body.email,
-        password: hashedPass.hash,
-        salt: hashedPass.salt,
-        profilePicture: req.body.profilePicture
-    });
+    const body = req.body;
+    
+    if (!(body.name && body.email && body.password)) {
+        res.status(400).json({message: `The request is missing the ${!body.name? 'name ' : ''}${!body.email? 'email ' : ''}${!body.password? 'password ' : ''}arguments in the request body`});
+        return;
+    }
 
     try {
+        const hashedPass = generatePassword(req.body.password);
+
+        const newUser =  new UserModel({
+            name: req.body.name,
+            email: req.body.email,
+            password: hashedPass.hash,
+            salt: hashedPass.salt,
+        });
+
         await newUser.save();
     
         const jwtToken = issueJWT(newUser);
@@ -56,16 +68,16 @@ async function registerUser(req: Request, res: Response, next: NextFunction) {
             _id: newUser._id
         }
 
-        res.json({success: true, user: userToSend, token: jwtToken.token, expiresIn: jwtToken.expiresIn});
+        res.status(200).json({user: userToSend, token: jwtToken.token, expiresIn: jwtToken.expiresIn});
     }
     catch (err) {
         next(err);
     }
 }
 
-async function userDetail(req: Request, res: Response) {
+async function userDetail(req: Request, res: Response, next: NextFunction) {
     try {
-        const user = await UserModel.findById({_id: req.body.userid});
+        const user = await UserModel.findById({_id: req.params.userid});
         
         if (user) {
             res.status(200).json({success: true, user: {
@@ -74,11 +86,11 @@ async function userDetail(req: Request, res: Response) {
             }});
         }
         else {
-            res.status(200).json({success: false, msg: "Could not find a user with that id"});
+            res.status(200).json({success: false, message: "Could not find a user with that id"});
         }
     }
     catch (err) {
-        res.status(500).json({success: false, msg: `Error while querying user: ${err}`})
+        next(err);
     }
 }
 
@@ -95,9 +107,14 @@ async function userDelete(request: Request, res: Response) {
     }
 }
 
-async function userUpdate(request: Request, res: Response) {
+async function userUpdate(request: Request, res: Response, next: NextFunction) {
     const req = request as AuthenticatedRequest;
     
+    if (!req.body.name && !req.body.email) {
+        res.status(400).json({message: `The request is missing the name or email arguments in the request body`});
+        return;
+    }
+
     try {
         let user = await UserModel.findById({_id: req.user._id});
 
@@ -113,16 +130,21 @@ async function userUpdate(request: Request, res: Response) {
             }});
         }
         else {
-            res.status(200).json({success: false, msg: "Could not find a user with that id"});
+            res.status(200).json({success: false, message: "Could not find a user with that id"});
         }
     }
     catch (err) {
-        res.status(500).json({success: false, msg: `Error while updating user: ${err}`});
+        next(err);
     }
 }
 
-async function userUpdatePassword(request: Request, res: Response) {
+async function userUpdatePassword(request: Request, res: Response, next: NextFunction) {
     const req = request as AuthenticatedRequest;
+
+    if (!req.body.password) {
+        res.status(400).json({message: `The request is missing the password argument in the request body`});
+        return;
+    }
 
     try {
         let user = await UserModel.findById({_id: req.user._id});
@@ -150,7 +172,7 @@ async function userUpdatePassword(request: Request, res: Response) {
         }
     }
     catch (err) {
-        res.status(500).json({success: false, msg: `Error while updating user password: ${err}`});
+        next(err);
     }
 }
 
