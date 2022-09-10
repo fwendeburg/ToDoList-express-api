@@ -1,26 +1,49 @@
-import { Response } from "express";
+import { Response, Request } from "express";
 import TaskModel from "../models/Task";
 import { AuthenticatedRequest } from '../@types/ExpressExtended';
 
-function taskList(req: AuthenticatedRequest, res: Response) {
-    TaskModel.find({owner: req.user._id}).then(tasks => {
+async function taskList(request: Request, res: Response) {
+    const req = request as AuthenticatedRequest;
+
+    try {
+        const tasks = await TaskModel.find({owner: req.user._id});
+
         res.status(200).json({success: true, tasks: tasks});
-    }).catch(err => res.status(500).json({success: false, msg: `Error while querying tasks: ${err}`}));
+    }
+    catch (err) {
+        res.status(500).json({success: false, msg: `Error while querying tasks: ${err}`})
+    }  
 }
 
-function taskDetail(req: AuthenticatedRequest, res: Response) {
-    TaskModel.findById({_id: req.params.taskid}).then(task => {
+async function taskDetail(request: Request, res: Response) {
+    const req = request as AuthenticatedRequest;
+
+    try {
+        const task = await TaskModel.findById({_id: req.params.taskid});
+
         res.status(200).json({success: true, task: task});
-    }).catch(err => res.status(500).json({success: false, msg: `Error while querying task: ${err}`}));
+    }
+    catch (err) {
+        res.status(500).json({success: false, msg: `Error while querying task: ${err}`});
+    }
 }
 
-function taskDelete(req: AuthenticatedRequest, res: Response) {
-    TaskModel.findByIdAndRemove({_id: req.params.taskid}).then(task => {
-        res.status(200).json({success: true})
-    }).catch(err => res.status(500).json({success: false, msg: `Error while removing task: ${err}`}));
+async function taskDelete(request: Request, res: Response) {
+    const req = request as AuthenticatedRequest;
+
+    try {
+        await TaskModel.findByIdAndRemove({_id: req.params.taskid});
+
+        res.status(200).json({success: true});
+    }
+    catch (err) {
+        res.status(500).json({success: false, msg: `Error while deleting task: ${err}`});
+    }
 }
 
-async function taskUpdate(req: AuthenticatedRequest, res: Response) {
+async function taskUpdate(request: Request, res: Response) {
+    const req = request as AuthenticatedRequest;
+
     try {
         let task = await TaskModel.findById({_id: req.params.taskid});
         
@@ -36,13 +59,18 @@ async function taskUpdate(req: AuthenticatedRequest, res: Response) {
 
             res.status(200).json({success: true, task: task});
         }
+        else {
+            res.status(200).json({success: false, msg: "Could not find a task with that id"});
+        }
     }
     catch (err) {
         res.status(500).json({success: false, msg: `Error while updating task: ${err}`});
     }
 }
 
-function taskCreate(req: AuthenticatedRequest, res: Response) {
+async function taskCreate(request: Request, res: Response) {
+    const req = request as AuthenticatedRequest;
+
     const newTask = new TaskModel({
         title: req.body.title,
         description: req.body.description,
@@ -52,9 +80,14 @@ function taskCreate(req: AuthenticatedRequest, res: Response) {
         project: req.body.project
     });
 
-    newTask.save().then(task => {
-        res.status(200).json(task);
-    }).catch(err => res.status(500).json({success: false, msg: `Error while creating task: ${err}`}));
+    try {
+        await newTask.save();
+
+        res.status(200).json({success: true, task: newTask});
+    }
+    catch (err) {
+        res.status(500).json({success: false, msg: `Error while creating task: ${err}`});
+    }
 }
 
 export {
