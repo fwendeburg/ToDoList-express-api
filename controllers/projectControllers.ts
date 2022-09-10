@@ -1,15 +1,24 @@
-import { Response } from "express";
+import { Response, Request } from "express";
 import ProjectModel from "../models/Project";
 import TaskModel from "../models/Task";
 import { AuthenticatedRequest } from '../@types/ExpressExtended';
  
-function projectList(req: AuthenticatedRequest, res: Response) {
-    ProjectModel.find({owner: req.user._id}).then(projects => {
+async function projectList(request: Request, res: Response) {
+    const req = request as AuthenticatedRequest;
+
+    try {
+        const projects = await ProjectModel.find({owner: req.user._id});
+
         res.status(200).json({success: true, projects: projects});
-    }).catch(err => res.status(500).json({success: false, msg: `Error while querying projects: ${err}`}));
+    }
+    catch (err) {
+        res.status(500).json({success: false, msg: `Error while querying projects: ${err}`});
+    }
 }
 
-async function projectDetail(req: AuthenticatedRequest, res: Response) {
+async function projectDetail(request: Request, res: Response) {
+    const req = request as AuthenticatedRequest;
+
     try {
         const project = await ProjectModel.findById({_id: req.params.projectid});
 
@@ -18,19 +27,31 @@ async function projectDetail(req: AuthenticatedRequest, res: Response) {
 
             res.status(200).json({success: true, project: project, tasks: tasks});
         }
+        else {
+            res.status(200).json({success: false, msg: "Could not find a project with that id"});
+        }
     }
     catch (error) {
         res.status(500).json({success: false, msg: `Error while querying project: ${error}`});
     }
 }
 
-function projectDelete(req: AuthenticatedRequest, res: Response) {
-    ProjectModel.findByIdAndRemove({_id: req.params.taskid}).then(project => {
+async function projectDelete(request: Request, res: Response) {
+    const req = request as AuthenticatedRequest;
+
+    try {
+        const project = await ProjectModel.findByIdAndRemove({_id: req.params.taskid});
+        
         res.status(200).json({success: true})
-    }).catch(err => res.status(500).json({success: false, msg: `Error while removing project: ${err}`}));
+    }
+    catch (err) {
+        res.status(500).json({success: false, msg: `Error while removing project: ${err}`});
+    }
 }
 
-async function projectUpdate(req: AuthenticatedRequest, res: Response) {
+async function projectUpdate(request: Request, res: Response) {
+    const req = request as AuthenticatedRequest;
+    
     try {
         let project = await ProjectModel.findById({_id: req.params.projectid});
         
@@ -49,7 +70,9 @@ async function projectUpdate(req: AuthenticatedRequest, res: Response) {
     }
 }
 
-function projectCreate(req: AuthenticatedRequest, res: Response) {
+async function projectCreate(request: Request, res: Response) {
+    const req = request as AuthenticatedRequest;
+
     const newProject = new ProjectModel({
         title: req.body.title,
         description: req.body.description,
@@ -57,9 +80,14 @@ function projectCreate(req: AuthenticatedRequest, res: Response) {
         owner: req.user._id
     });
 
-    newProject.save().then(project => {
-        res.status(200).json(project);
-    }).catch(err => res.status(500).json({success: false, msg: `Error while creating project: ${err}`}));
+    try {
+        await newProject.save();
+
+        res.status(200).json({success: true, project: newProject});
+    }
+    catch (err) {
+        res.status(500).json({success: false, msg: `Error while creating project: ${err}`});
+    }
 }
 
 export {
