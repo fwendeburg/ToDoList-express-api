@@ -4,13 +4,11 @@ import {userDelete, userLogin, userUpdate, userUpdatePassword, userDetail, regis
 
 let userRouter = Router();
 
-userRouter.get('/:userid', passport.authenticate('jwt', { session: false }), userDetail);
+userRouter.get('/', passport.authenticate('jwt', { session: false }), userDetail);
 
-userRouter.put('/:userid', passport.authenticate('jwt', { session: false }), userUpdate);
+userRouter.put('/', passport.authenticate('jwt', { session: false }), userUpdate);
 
-userRouter.delete('/:userid', passport.authenticate('jwt', { session: false }), userDelete);
-
-userRouter.post('/:userid/changepassword', passport.authenticate('jwt', { session: false }), userUpdatePassword);
+userRouter.delete('/', passport.authenticate('jwt', { session: false }), userDelete);
 
 userRouter.post('/login', userLogin);
 
