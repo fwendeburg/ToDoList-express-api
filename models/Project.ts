@@ -20,13 +20,16 @@ const ProjectSchema = new Schema({
     description: { type: String, trim: true },
     dueDate: {
         type: Date,
-        validate: [function(this: IProject) {
-            if (this.dueDate instanceof Date) {
-                return this.dueDate > this.dateCreated;
-            }
-            
-            return true;
-        }]
+        validate: {
+            validator: function(this: IProject) {
+                            if (this.dueDate instanceof Date) {
+                                return this.dueDate > this.dateCreated;
+                            }
+                            
+                            return true;
+                        },
+            message: "The due date cannot be before the current date"
+        }
     },
     dateCreated: { type: Date, required: true, default: Date.now },
     owner: { type: Schema.Types.ObjectId, ref: 'Users', required: [true, "The project must have an owner"] }
