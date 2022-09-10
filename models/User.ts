@@ -21,7 +21,15 @@ const UserSchema = new Schema({
         trim: true,
         maxLength: [50, "The max length of the email is 50 characters"],
         match: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-        unique: true
+        unique: true,
+        validate: {
+            validator: async function(this: IUser): Promise<boolean> {
+                        const user = await UserModel.find({email: this.email});
+
+                        return !user;
+                    },
+            message: "There already exists a user with this email"
+        }
     },
     password: { 
         type: String, 
