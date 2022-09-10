@@ -6,7 +6,7 @@ import { Error } from 'mongoose';
 
 async function userLogin(req: Request, res: Response, next: NextFunction) {
     if (!(req.body.email && req.body.password)) {
-        res.status(400).json({message: `The request is missing the ${!req.body.email? 'email ' : ''}${!req.body.password? 'password ' : ''}arguments in the request body`});
+        res.status(400).json({message: `The request is missing the ${!req.body.email? 'email ' : ''}${!req.body.password? 'password ' : ''}items in the request body`});
         return;
     }
 
@@ -44,7 +44,7 @@ async function registerUser(req: Request, res: Response, next: NextFunction) {
     const body = req.body;
     
     if (!(body.name && body.email && body.password)) {
-        res.status(400).json({message: `The request is missing the ${!body.name? 'name ' : ''}${!body.email? 'email ' : ''}${!body.password? 'password ' : ''}arguments in the request body`});
+        res.status(400).json({message: `The request is missing the ${!body.name? 'name ' : ''}${!body.email? 'email ' : ''}${!body.password? 'password ' : ''}items in the request body`});
         return;
     }
 
@@ -111,7 +111,7 @@ async function userUpdate(request: Request, res: Response, next: NextFunction) {
     const req = request as AuthenticatedRequest;
     
     if (!req.body.name && !req.body.email) {
-        res.status(400).json({message: `The request is missing the name or email arguments in the request body`});
+        res.status(400).json({message: `The request is missing the name or/and email items in the request body`});
         return;
     }
 
