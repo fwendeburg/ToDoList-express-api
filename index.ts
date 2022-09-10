@@ -6,6 +6,7 @@ import projectsRouter from './routes/projectsRoutes';
 import userRouter from './routes/userRoutes';
 import passport from "passport";
 import "./authentication/passportConfig";
+import { ValidationErrorHandler, RouteNotFoundHandler, CastErrorHandler } from './error_handling/errorHandlers'
 
 dotenv.config();
 
@@ -21,7 +22,7 @@ const port = process.env.PORT;
     } as ConnectOptions);
   }
   catch (error) {
-    console.log("Database connection failed! " + error);
+    console.log("Database connection failed! - " + error);
   }
 })();
 
@@ -35,9 +36,11 @@ app.use('/tasks', passport.authenticate('jwt', { session: false }), taskRouter);
 app.use('/projects', passport.authenticate('jwt', { session: false }), projectsRouter);
 app.use('/users', userRouter);
 
-app.use(function (req: Request, res: Response) {
-  res.sendStatus(404);
-});
+app.use(RouteNotFoundHandler);
+
+// Error Handling
+app.use(ValidationErrorHandler);
+app.use(CastErrorHandler);
 
 app.listen(port, () => {
   console.log(`⚡️[server]: Server is running at http://localhost:${port}`);
