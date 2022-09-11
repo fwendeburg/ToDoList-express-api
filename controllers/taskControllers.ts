@@ -1,8 +1,8 @@
-import { Response, Request } from "express";
+import { Response, Request, NextFunction } from "express";
 import TaskModel from "../models/Task";
 import { AuthenticatedRequest } from '../@types/ExpressExtended';
 
-async function taskList(request: Request, res: Response) {
+async function taskList(request: Request, res: Response, next: NextFunction) {
     const req = request as AuthenticatedRequest;
 
     try {
@@ -11,11 +11,11 @@ async function taskList(request: Request, res: Response) {
         res.status(200).json({success: true, tasks: tasks});
     }
     catch (err) {
-        res.status(500).json({success: false, msg: `Error while querying tasks: ${err}`})
+        next(err);
     }  
 }
 
-async function taskDetail(request: Request, res: Response) {
+async function taskDetail(request: Request, res: Response, next: NextFunction) {
     const req = request as AuthenticatedRequest;
 
     try {
@@ -24,11 +24,11 @@ async function taskDetail(request: Request, res: Response) {
         res.status(200).json({success: true, task: task});
     }
     catch (err) {
-        res.status(500).json({success: false, msg: `Error while querying task: ${err}`});
+        next(err);
     }
 }
 
-async function taskDelete(request: Request, res: Response) {
+async function taskDelete(request: Request, res: Response, next: NextFunction) {
     const req = request as AuthenticatedRequest;
 
     try {
@@ -37,12 +37,17 @@ async function taskDelete(request: Request, res: Response) {
         res.status(200).json({success: true});
     }
     catch (err) {
-        res.status(500).json({success: false, msg: `Error while deleting task: ${err}`});
+        next(err);
     }
 }
 
-async function taskUpdate(request: Request, res: Response) {
+async function taskUpdate(request: Request, res: Response, next: NextFunction) {
     const req = request as AuthenticatedRequest;
+
+    if (!(req.body.title || req.body.description || req.body.dueDate || req.body.priority || req.body.isCompleted || req.body.project)) {
+        res.status(400).json({message: `The request is missing a property to update`});
+        return;
+    }
 
     try {
         let task = await TaskModel.findById({_id: req.params.taskid});
@@ -64,29 +69,34 @@ async function taskUpdate(request: Request, res: Response) {
         }
     }
     catch (err) {
-        res.status(500).json({success: false, msg: `Error while updating task: ${err}`});
+        next(err);
     }
 }
 
-async function taskCreate(request: Request, res: Response) {
+async function taskCreate(request: Request, res: Response, next: NextFunction) {
     const req = request as AuthenticatedRequest;
 
-    const newTask = new TaskModel({
-        title: req.body.title,
-        description: req.body.description,
-        dueDate: req.body.dueDate,
-        priority: req.body.priority,
-        owner: req.user._id,
-        project: req.body.project
-    });
+    if (!(req.body.title && req.body.priority)) {
+        res.status(400).json({message: `The request is missing the ${!req.body.title? 'title, ' : ''}${!req.body.priority? 'priority ' : ''}items in the request body`});
+        return;
+    }
 
     try {
+        const newTask = new TaskModel({
+            title: req.body.title,
+            description: req.body.description,
+            dueDate: req.body.dueDate,
+            priority: req.body.priority,
+            owner: req.user._id,
+            project: req.body.project
+        });
+
         await newTask.save();
 
         res.status(200).json({success: true, task: newTask});
     }
     catch (err) {
-        res.status(500).json({success: false, msg: `Error while creating task: ${err}`});
+        next(err);
     }
 }
 
