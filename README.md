@@ -20,6 +20,13 @@ Node.js, Typescript, Javascript, MongoDB
 | 500 - Server Error      | Something went wrong on the server side.                                        |
 
 ### `User`
+| **Method** |  **URL**  | **Authentication** |
+|------------|:---------:|--------------------|
+| POST       | /register | not required       |
+| POST       | /login    | not required       |
+| GET        | /:userid  | required           |
+| PUT        | /         | required           |
+| DELETE     | /         | required           |
 
 ### `Project`
 
