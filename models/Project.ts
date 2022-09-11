@@ -14,7 +14,7 @@ const ProjectSchema = new Schema({
     title: {
         type: String, 
         trim: true,
-        maxLength: [70, "The max length of the task title is 70 characters"],
+        maxLength: [70, "The max length of the project title is 70 characters"],
         required: [true, "The project title can't be empty"]
     },
     description: { type: String, trim: true },
