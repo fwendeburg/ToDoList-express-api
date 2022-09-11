@@ -13,7 +13,7 @@ Node.js, Typescript, Javascript, MongoDB
 Work in progress.
 
 ## Tests
-All endpoints have error handlig and have been tested.
+All endpoints have error handling and have been tested.
 
 ## Run Locally
 Clone the project
