@@ -1,4 +1,4 @@
-import { Response, Request } from "express";
+import { Response, Request, NextFunction } from "express";
 import ProjectModel from "../models/Project";
 import TaskModel from "../models/Task";
 import { AuthenticatedRequest } from '../@types/ExpressExtended';
@@ -16,7 +16,7 @@ async function projectList(request: Request, res: Response) {
     }
 }
 
-async function projectDetail(request: Request, res: Response) {
+async function projectDetail(request: Request, res: Response, next: NextFunction) {
     const req = request as AuthenticatedRequest;
 
     try {
@@ -31,62 +31,82 @@ async function projectDetail(request: Request, res: Response) {
             res.status(200).json({success: false, msg: "Could not find a project with that id"});
         }
     }
-    catch (error) {
-        res.status(500).json({success: false, msg: `Error while querying project: ${error}`});
+    catch (err) {
+        next(err);
     }
 }
 
-async function projectDelete(request: Request, res: Response) {
+async function projectDelete(request: Request, res: Response, next: NextFunction) {
     const req = request as AuthenticatedRequest;
+
+    if (!req.params.projectid) {
+        res.status(400).json({message: `The request is missing the projectId in the request parameters`});
+        return;
+    }
 
     try {
-        const project = await ProjectModel.findByIdAndRemove({_id: req.params.taskid});
+        const project = await ProjectModel.findByIdAndRemove({_id: req.params.projectid});
         
-        res.status(200).json({success: true})
+        res.status(200).json({success: true});
     }
     catch (err) {
-        res.status(500).json({success: false, msg: `Error while removing project: ${err}`});
+        next(err);
     }
 }
 
-async function projectUpdate(request: Request, res: Response) {
+async function projectUpdate(request: Request, res: Response, next: NextFunction) {
     const req = request as AuthenticatedRequest;
-    
+
+    if (!req.params.projectid) {
+        res.status(400).json({message: `The request is missing the projectId in the request parameters`});
+        return;
+    }
+
+    if (!(req.body.title || req.body.description || req.body.dueDate)) {
+        res.status(400).json({message: `The request is missing the ${!req.body.title? 'title and/or ' : ''}${!req.body.description? 'description and/or ' : ''}${!req.body.dueDate? 'dueDate ' : ''}items in the request body`});
+        return;
+    }
+
     try {
         let project = await ProjectModel.findById({_id: req.params.projectid});
         
         if (project) {
-            project.title = req.body.name || project.title;
+            project.title = req.body.title || project.title;
             project.description = req.body.description || project.description;
             project.dueDate = req.body.dueDate || project.dueDate;
         
             await project.save();
 
-            res.status(200).json({success: true, task: project});
+            res.status(200).json({success: true, project: project});
         }
     }
     catch (err) {
-        res.status(500).json({success: false, msg: `Error while updating project: ${err}`});
+        next(err);
     }
 }
 
-async function projectCreate(request: Request, res: Response) {
+async function projectCreate(request: Request, res: Response, next: NextFunction) {
     const req = request as AuthenticatedRequest;
 
-    const newProject = new ProjectModel({
-        title: req.body.title,
-        description: req.body.description,
-        dueDate: req.body.dueDate,
-        owner: req.user._id
-    });
+    if (!(req.body.title && req.body.description)) {
+        res.status(400).json({message: `The request is missing the ${!req.body.title? 'title, ' : ''}${!req.body.description? 'description ' : ''}items in the request body`});
+        return;
+    }
 
     try {
+        const newProject = new ProjectModel({
+            title: req.body.title,
+            description: req.body.description,
+            dueDate: req.body.dueDate,
+            owner: req.user._id
+        });
+
         await newProject.save();
 
         res.status(200).json({success: true, project: newProject});
     }
     catch (err) {
-        res.status(500).json({success: false, msg: `Error while creating project: ${err}`});
+        next(err);
     }
 }
 
