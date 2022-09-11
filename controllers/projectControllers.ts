@@ -3,7 +3,7 @@ import ProjectModel from "../models/Project";
 import TaskModel from "../models/Task";
 import { AuthenticatedRequest } from '../@types/ExpressExtended';
  
-async function projectList(request: Request, res: Response) {
+async function projectList(request: Request, res: Response, next: NextFunction) {
     const req = request as AuthenticatedRequest;
 
     try {
@@ -12,7 +12,7 @@ async function projectList(request: Request, res: Response) {
         res.status(200).json({success: true, projects: projects});
     }
     catch (err) {
-        res.status(500).json({success: false, msg: `Error while querying projects: ${err}`});
+        next(err);
     }
 }
 
@@ -39,11 +39,6 @@ async function projectDetail(request: Request, res: Response, next: NextFunction
 async function projectDelete(request: Request, res: Response, next: NextFunction) {
     const req = request as AuthenticatedRequest;
 
-    if (!req.params.projectid) {
-        res.status(400).json({message: `The request is missing the projectId in the request parameters`});
-        return;
-    }
-
     try {
         const project = await ProjectModel.findByIdAndRemove({_id: req.params.projectid});
         
@@ -56,11 +51,6 @@ async function projectDelete(request: Request, res: Response, next: NextFunction
 
 async function projectUpdate(request: Request, res: Response, next: NextFunction) {
     const req = request as AuthenticatedRequest;
-
-    if (!req.params.projectid) {
-        res.status(400).json({message: `The request is missing the projectId in the request parameters`});
-        return;
-    }
 
     if (!(req.body.title || req.body.description || req.body.dueDate)) {
         res.status(400).json({message: `The request is missing the ${!req.body.title? 'title and/or ' : ''}${!req.body.description? 'description and/or ' : ''}${!req.body.dueDate? 'dueDate ' : ''}items in the request body`});
@@ -88,8 +78,8 @@ async function projectUpdate(request: Request, res: Response, next: NextFunction
 async function projectCreate(request: Request, res: Response, next: NextFunction) {
     const req = request as AuthenticatedRequest;
 
-    if (!(req.body.title && req.body.description)) {
-        res.status(400).json({message: `The request is missing the ${!req.body.title? 'title, ' : ''}${!req.body.description? 'description ' : ''}items in the request body`});
+    if (!req.body.title) {
+        res.status(400).json({message: `The request is missing the ${!req.body.title? 'title' : ''} item in the request body`});
         return;
     }
 
