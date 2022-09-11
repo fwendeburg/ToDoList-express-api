@@ -2,11 +2,10 @@ import { NextFunction, Request, Response } from "express";
 import { generatePassword, issueJWT, validatePassword } from "../authentication/utils";
 import UserModel from "../models/User";
 import { AuthenticatedRequest } from '../@types/ExpressExtended';
-import { Error } from 'mongoose';
 
 async function userLogin(req: Request, res: Response, next: NextFunction) {
     if (!(req.body.email && req.body.password)) {
-        res.status(400).json({message: `The request is missing the ${!req.body.email? 'email ' : ''}${!req.body.password? 'password ' : ''}items in the request body`});
+        res.status(400).json({message: `The request is missing the ${!req.body.email? 'email, ' : ''}${!req.body.password? 'password ' : ''}items in the request body`});
         return;
     }
 
@@ -44,7 +43,7 @@ async function registerUser(req: Request, res: Response, next: NextFunction) {
     const body = req.body;
     
     if (!(body.name && body.email && body.password)) {
-        res.status(400).json({message: `The request is missing the ${!body.name? 'name ' : ''}${!body.email? 'email ' : ''}${!body.password? 'password ' : ''}items in the request body`});
+        res.status(400).json({message: `The request is missing the ${!body.name? 'name, ' : ''}${!body.email? 'email ' : ''}${!body.password? ', password ' : ''}items in the request body`});
         return;
     }
 
@@ -76,6 +75,11 @@ async function registerUser(req: Request, res: Response, next: NextFunction) {
 }
 
 async function userDetail(req: Request, res: Response, next: NextFunction) {
+    if (!req.params.userid) {
+        res.status(400).json({message: `The request is missing the userId in the request parameters`});
+        return;
+    }
+
     try {
         const user = await UserModel.findById({_id: req.params.userid});
         
@@ -94,16 +98,16 @@ async function userDetail(req: Request, res: Response, next: NextFunction) {
     }
 }
 
-async function userDelete(request: Request, res: Response) {
+async function userDelete(request: Request, res: Response, next: NextFunction) {
     const req = request as AuthenticatedRequest;
-    
+
     try {
         await UserModel.findByIdAndRemove({_id: req.user._id});
     
         res.status(200).json({success: true});
     }
     catch (err) {
-        res.status(500).json({success: false, msg: `Error while deleting user: ${err}`});
+        next(err);
     }
 }
 
@@ -111,7 +115,7 @@ async function userUpdate(request: Request, res: Response, next: NextFunction) {
     const req = request as AuthenticatedRequest;
     
     if (!req.body.name && !req.body.email) {
-        res.status(400).json({message: `The request is missing the name or/and email items in the request body`});
+        res.status(400).json({message: `The request is missing the name and/or email items in the request body`});
         return;
     }
 
