@@ -4,7 +4,7 @@ import {userDelete, userLogin, userUpdate, userUpdatePassword, userDetail, regis
 
 let userRouter = Router();
 
-userRouter.get('/', passport.authenticate('jwt', { session: false }), userDetail);
+userRouter.get('/:userid', passport.authenticate('jwt', { session: false }), userDetail);
 
 userRouter.put('/', passport.authenticate('jwt', { session: false }), userUpdate);
 
