@@ -16,7 +16,7 @@ interface ITask extends Document {
     priority: TaskPriority;
     isCompleted: boolean;
     owner: IUser["_id"];
-    project: IProject["_id"];
+    project?: IProject["_id"];
 }
 
 const TaskSchema = new Schema({
