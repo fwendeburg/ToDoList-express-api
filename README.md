@@ -10,7 +10,22 @@ A REST API for a todo list app.
 Node.js, Typescript, Javascript, MongoDB
 
 ## Documentation
-Work in progress.
+### Responses
+| **HTTP Response Code**  | **Meaning**                                                                     |
+|-------------------------|---------------------------------------------------------------------------------|
+| 200 - OK                | Everything worked as epected.                                                   |
+| 400 - Bad Request       | The request was unacceptable, most likely due to missing a required parameter.  |
+| 401 - Unauthorized      | You need to be authenticated to make this request (missing bearer token).       |
+| 422 - Validation Error  | The parameters passed in the request body failed validaiton.                    |
+| 500 - Server Error      | Something went wrong on the server side.                                        |
+
+### `User`
+
+### `Project`
+
+### `Task`
+
+WORK IN PROGRESS.
 
 ## Tests
 All endpoints have error handling and have been tested.
