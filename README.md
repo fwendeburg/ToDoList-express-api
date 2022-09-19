@@ -20,13 +20,13 @@ Node.js, Typescript, Javascript, MongoDB
 | 500 - Server Error      | Something went wrong on the server side.                                        |
 
 ### `User`
-| **Method** |  **URL**  | **Authentication** |
-|------------|:---------:|--------------------|
-| POST       | /register | not required       |
-| POST       | /login    | not required       |
-| GET        | /:userid  | required           |
-| PUT        | /         | required           |
-| DELETE     | /         | required           |
+| **Method** | **URL**   | **Description**                                       | **Authentication** |
+|------------|-----------|-------------------------------------------------------|--------------------|
+| POST       | /register | Registers a new user.                                 | not required       |
+| POST       | /login    | Authenticates a user.                                 | not required       |
+| GET        | /:userid  | Gets stored information about the authenticated user. | required           |
+| PUT        | /         | Modifies stored user data.                            | required           |
+| DELETE     | /         | Deletes the authenticated user from the database.     | required           |
 
 ### `Project`
 | **Method** |   **URL**   | **Description**                                                                                                          | **Authentication** |
