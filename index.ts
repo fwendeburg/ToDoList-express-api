@@ -1,12 +1,13 @@
-import express, { Express, Request, Response } from 'express';
+import express, { Express } from 'express';
 import dotenv from 'dotenv';
 import { connect, ConnectOptions } from 'mongoose';
 import taskRouter from './routes/tasksRoutes';
 import projectsRouter from './routes/projectsRoutes';
 import userRouter from './routes/userRoutes';
-import passport from "passport";
-import "./authentication/passportConfig";
+import passport from 'passport';
+import './authentication/passportConfig';
 import { ValidationErrorHandler, RouteNotFoundHandler, CastErrorHandler } from './error_handling/errorHandlers'
+import cors from 'cors';
 
 dotenv.config();
 
@@ -27,6 +28,7 @@ const port = process.env.PORT;
 })();
 
 // Middleware
+app.use(cors);
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(passport.initialize());
