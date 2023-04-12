@@ -7,7 +7,7 @@ A REST API for a todo list app.
 - Authentication using JWT.
 
 ## Tech Stack
-Node.js, Typescript, Javascript, MongoDB
+express, Typescript, MongoDB
 
 ## Documentation
 ### Responses
